@@ -11,9 +11,3 @@ class UploadedImage(forms.ModelForm):
         model = MyImage
         # include all the fileds of the model
         fields = "__all__"
-
-
-class AESImageForm(forms.ModelForm):
-    class Meta:
-        model = AES_Image
-        fields = "__all__"

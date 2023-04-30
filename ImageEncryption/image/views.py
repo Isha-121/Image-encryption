@@ -8,7 +8,11 @@ from django.shortcuts import render, redirect
 from .forms import UploadedImage
 from .models import MyImage
 from django.conf import settings
-from .forms import AESImageForm
+from .forms2 import AESImageForm
+
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+from base64 import b64encode
 
 
 from PIL import Image
@@ -48,32 +52,6 @@ dna["AC"] = dna["CA"] = dna["GT"] = dna["TG"] = "C"
 dna["AT"] = dna["TA"] = dna["CG"] = dna["GC"] = "T"
 # Maximum time point and total number of time points
 tmax, N = 100, 10000
-
-
-# AES Encryption
-def handle_aes_encryption(request):
-    if request.method == "POST":
-        form = AESImageForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            img_obj = form.instance
-            file_name = img_obj.image.name
-            file_path = img_obj.image.path
-            with open(file_name, "rb") as entry:
-                data = entry.read()
-                cipher = AES.new(key, AES.MODE_CFB)
-                ciphertext = cipher.encrypt(pad(data, AES.block_size))
-                iv = b64encode(cipher.iv).decode("UTF-8")
-                ciphertext = b64encode(ciphertext).decode("UTF-8")
-                to_write = iv + ciphertext
-            entry.close()
-            with open("./static/_enc_" + file_name, "w") as data:
-                data.write(to_write)
-            data.close()
-            return render(request, "aes_encrypt.html", {"form": form})
-    else:
-        form = AESImageForm()
-    return render(request, "aes_image.html", {"form": form})
 
 
 def lorenz(X, t, a, b, c):
@@ -463,7 +441,54 @@ def get_images(request):
         # send list of images to template
         images = MyImage.objects.all()
         return render(request, "images.html", {"images": images})
-    
+
+
 def get_home(request):
     if request.method == "GET":
         return render(request, "home.html")
+
+
+# AES Encryption
+def aes_encrypt(request):
+    if request.method == "GET":
+        form = AESImageForm()
+        return render(request, "aesEncrypt.html", {"form": form})
+    elif request.method == "POST":
+        form = AESImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Getting the current instance object to display in the template
+            img_obj = form.instance
+            key = form.instance.key
+            key = key.encode("UTF-8")
+            key = pad(key, AES.block_size)
+
+            # file_path = img_obj.image.path
+            file_name = img_obj.image.name[7:]
+            file_path = "./media/" + img_obj.image.name
+            print(
+                "key",
+                key,
+                "file name",
+                file_name,
+                "file path",
+                file_path,
+            )
+            # print(key, file_path, file_name)
+            with open(file_path, "rb") as entry:
+                data = entry.read()
+                cipher = AES.new(key, AES.MODE_CFB)
+                ciphertext = cipher.encrypt(pad(data, AES.block_size))
+                iv = b64encode(cipher.iv).decode("UTF-8")
+                ciphertext = b64encode(ciphertext).decode("UTF-8")
+                to_write = iv + ciphertext
+            entry.close()
+            with open("./static/aes_encrypted.png" , "w") as data:
+                data.write(to_write)
+            data.close()
+
+            return render(
+                request,
+                "image.html",
+                {"form": form, "img_obj": img_obj},
+            )
