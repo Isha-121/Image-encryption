@@ -8,6 +8,11 @@ from django.shortcuts import render, redirect
 from .forms import UploadedImage
 from .models import MyImage
 from django.conf import settings
+from .forms2 import AESImageForm
+
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad
+from base64 import b64encode
 
 
 from PIL import Image
@@ -355,16 +360,17 @@ def recover_image(b, g, r, iname):
     img[:, :, 0] = b
     return img
 
+
 def image_view(request):
     # Load the image data from file
-    img_data = cv2.imread('image.jpg')
+    img_data = cv2.imread("image.jpg")
 
     # Convert the image data to bytes
-    retval, buffer = cv2.imencode('.jpg', img_data)
+    retval, buffer = cv2.imencode(".jpg", img_data)
     img_bytes = buffer.tobytes()
 
     # Return the image as a response
-    return HttpResponse(img_bytes, content_type='image/jpeg')
+    return HttpResponse(img_bytes, content_type="image/jpeg")
 
 
 def decrypt(image, fx, fy, fz, fp, Mk, bt, gt, rt):
@@ -435,10 +441,54 @@ def get_images(request):
         # send list of images to template
         images = MyImage.objects.all()
         return render(request, "images.html", {"images": images})
-    
+
+
 def get_home(request):
     if request.method == "GET":
         return render(request, "home.html")
+
+
+# AES Encryption
 def aes_encrypt(request):
     if request.method == "GET":
-        return render(request, "aesEncrypt.html")
+        form = AESImageForm()
+        return render(request, "aesEncrypt.html", {"form": form})
+    elif request.method == "POST":
+        form = AESImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Getting the current instance object to display in the template
+            img_obj = form.instance
+            key = form.instance.key
+            key = key.encode("UTF-8")
+            key = pad(key, AES.block_size)
+
+            # file_path = img_obj.image.path
+            file_name = img_obj.image.name[7:]
+            file_path = "./media/" + img_obj.image.name
+            print(
+                "key",
+                key,
+                "file name",
+                file_name,
+                "file path",
+                file_path,
+            )
+            # print(key, file_path, file_name)
+            with open(file_path, "rb") as entry:
+                data = entry.read()
+                cipher = AES.new(key, AES.MODE_CFB)
+                ciphertext = cipher.encrypt(pad(data, AES.block_size))
+                iv = b64encode(cipher.iv).decode("UTF-8")
+                ciphertext = b64encode(ciphertext).decode("UTF-8")
+                to_write = iv + ciphertext
+            entry.close()
+            with open("./static/aes_encrypted.png", "w") as data:
+                data.write(to_write)
+            data.close()
+
+            return render(
+                request,
+                "aesEncrypt.html",
+                {"form": form, "img_obj": img_obj},
+            )

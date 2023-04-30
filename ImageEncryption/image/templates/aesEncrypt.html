@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -52,6 +53,20 @@
 				</form>
 			</div>
         </div>
-    
-    </body>
+    <form class="my-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+
+    {% if img_obj %}
+    <h1>Encrypted Image</h1>
+    <a
+      href="{% static 'aes_encrypted.png' %}"
+      target="_blank"
+      alt="Download Encrypted Image"
+      download="aes_encrypted.png"
+      >Download Encrypted Image</a
+    >
+    {% endif %}
+  </body>
 </html>
