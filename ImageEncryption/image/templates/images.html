@@ -10,7 +10,7 @@
     <h2>List of all images in database</h2>
     {% for image in images %}
     <div>
-      <img src="{{ MEDIA_ROUTE }}/image" alt="{{ image.caption }}" />
+      <img src="{{ image.image.url }}" alt="{{ image.caption }}" />
       <p>{{ image }}</p>
     </div>
     {% endfor %}
