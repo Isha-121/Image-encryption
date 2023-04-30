@@ -1,8 +1,13 @@
-
 # Create your views here.
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, redirect
+
+from .forms import UploadedImage
+from .models import Image
+from django.conf import settings
 
 
 from PIL import Image
@@ -52,20 +57,6 @@ def lorenz(X, t, a, b, c):
     return x_dot, y_dot, z_dot
 
 
-def image_selector(request):  # returns path to selected image
-    print(request.FILES.get('file'))
-    file = request.FILES.get('file')
-    if not file:
-        print('Error: no file uploaded')
-        return None
-    path = 'uploaded_files/' + file.name
-    with open(path, 'wb') as f:
-        for chunk in file.chunks():
-            f.write(chunk)
-    print('Image uploaded:'+os.path.abspath(path))
-    return path
-
-
 def split_into_rgb_channels(image):
     red = image[:, :, 2]
     green = image[:, :, 1]
@@ -90,8 +81,7 @@ def securekey(iname):
 
 
 def update_lorentz(key):
-    key_bin = bin(int(key, 16))[2:].zfill(
-        256)  # covert hex key digest to binary
+    key_bin = bin(int(key, 16))[2:].zfill(256)  # covert hex key digest to binary
     k = {}  # key dictionary
     key_32_parts = textwrap.wrap(key_bin, 8)  # slicing key into 8 parts
     num = 1
@@ -116,7 +106,7 @@ def decompose_matrix(iname):
     blue, green, red = split_into_rgb_channels(image)
     for values, channel in zip((red, green, blue), (2, 1, 0)):
         img = np.zeros((values.shape[0], values.shape[1]), dtype=np.uint8)
-        img[:, :] = (values)
+        img[:, :] = values
         if channel == 0:
             B = np.asmatrix(img)
         elif channel == 1:
@@ -139,10 +129,9 @@ def dna_encode(b, g, r):
         idx = 0
         for j in range(0, m):
             for i in range(0, n, 2):
-                enc[j, idx] = dna["{0}{1}".format(
-                    color[j, i], color[j, i + 1])]
+                enc[j, idx] = dna["{0}{1}".format(color[j, i], color[j, i + 1])]
                 idx += 1
-                if (i == n - 2):
+                if i == n - 2:
                     idx = 0
                     break
 
@@ -213,12 +202,17 @@ def gen_chaos_seq(m, n):
 
 def plot(x, y, z):
     fig = plt.figure()
-    ax = fig.gca(projection='3d')
+    ax = fig.gca(projection="3d")
     s = 100
     c = np.linspace(0, 1, N)
     for i in range(0, N - s, s):
-        ax.plot(x[i:i + s + 1], y[i:i + s + 1], z[i:i + s + 1],
-                color=(1 - c[i], c[i], 1), alpha=0.4)
+        ax.plot(
+            x[i : i + s + 1],
+            y[i : i + s + 1],
+            z[i : i + s + 1],
+            color=(1 - c[i], c[i], 1),
+            alpha=0.4,
+        )
     ax.set_axis_off()
     plt.show()
 
@@ -328,9 +322,9 @@ def dna_decode(b, g, r):
             for i in range(0, n):
                 dec[j, 2 * i] = dna["{0}".format(color[j, i])][0]
                 dec[j, 2 * i + 1] = dna["{0}".format(color[j, i])][1]
-    b_dec = (np.packbits(b_dec, axis=-1))
-    g_dec = (np.packbits(g_dec, axis=-1))
-    r_dec = (np.packbits(r_dec, axis=-1))
+    b_dec = np.packbits(b_dec, axis=-1)
+    g_dec = np.packbits(g_dec, axis=-1)
+    r_dec = np.packbits(r_dec, axis=-1)
     return b_dec, g_dec, r_dec
 
 
@@ -377,38 +371,27 @@ def decrypt(image, fx, fy, fz, fp, Mk, bt, gt, rt):
     img[:, :, 1] = green
     img[:, :, 2] = blue
     cv2.imwrite(("Recoveredvitdna.jpg"), img)
+
+
 # program exec9
 
 
 @csrf_exempt
-def image(request):
+def upload_image(request):
+    if request.method == "POST":
+        form = UploadedImage(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Getting the current instance object to display in the template
+            img_obj = form.instance
+            return render(request, "image.html", {"form": form, "img_obj": img_obj})
+    elif request.method == "GET":
+        form = UploadedImage()
+        return render(request, "image.html", {"form": form})
+
+
+def get_images(request):
     if request.method == "GET":
-        templates = loader.get_template('image.html')
-        return HttpResponse(templates.render())
-    elif request.method == "POST":
-        print(request.body)
-
-        print('Hello')
-        file_path = image_selector(request)
-        print(file_path)
-        key, m, n = securekey(file_path)
-        update_lorentz(key)
-        blue, green, red = decompose_matrix(file_path)
-        blue_e, green_e, red_e = dna_encode(blue, green, red)
-        Mk_e = key_matrix_encode(key, blue)
-        blue_final, green_final, red_final = xor_operation(
-            blue_e, green_e, red_e, Mk_e)
-        x, y, z = gen_chaos_seq(m, n)
-        fx, fy, fz = sequence_indexing(x, y, z)
-        blue_scrambled, green_scrambled, red_scrambled = scramble(
-            fx, fy, fz, blue_final, red_final, green_final)
-        b, g, r = dna_decode(
-            blue_scrambled, green_scrambled, red_scrambled)
-        img = recover_image(b, g, r, file_path)
-
-        print("decrypting...")
-        decrypt(img, fx, fy, fz, file_path, Mk_e, blue, green, red)
-
-        return JsonResponse({'success': True})
-    else:
-        return JsonResponse({'success': False})
+        image_dir = os.path.join(settings.MEDIA_ROOT, "images")
+        # send the images as response to template from the media directory to display
+        return render(request, "images.html", {"images": os.listdir(image_dir)})
