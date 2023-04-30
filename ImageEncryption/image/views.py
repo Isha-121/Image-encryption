@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from .forms import UploadedImage
 from .models import MyImage
 from django.conf import settings
+from .forms import AESImageForm
 
 
 from PIL import Image
@@ -47,6 +48,32 @@ dna["AC"] = dna["CA"] = dna["GT"] = dna["TG"] = "C"
 dna["AT"] = dna["TA"] = dna["CG"] = dna["GC"] = "T"
 # Maximum time point and total number of time points
 tmax, N = 100, 10000
+
+
+# AES Encryption
+def handle_aes_encryption(request):
+    if request.method == "POST":
+        form = AESImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            img_obj = form.instance
+            file_name = img_obj.image.name
+            file_path = img_obj.image.path
+            with open(file_name, "rb") as entry:
+                data = entry.read()
+                cipher = AES.new(key, AES.MODE_CFB)
+                ciphertext = cipher.encrypt(pad(data, AES.block_size))
+                iv = b64encode(cipher.iv).decode("UTF-8")
+                ciphertext = b64encode(ciphertext).decode("UTF-8")
+                to_write = iv + ciphertext
+            entry.close()
+            with open("./static/_enc_" + file_name, "w") as data:
+                data.write(to_write)
+            data.close()
+            return render(request, "aes_encrypt.html", {"form": form})
+    else:
+        form = AESImageForm()
+    return render(request, "aes_image.html", {"form": form})
 
 
 def lorenz(X, t, a, b, c):
@@ -355,16 +382,17 @@ def recover_image(b, g, r, iname):
     img[:, :, 0] = b
     return img
 
+
 def image_view(request):
     # Load the image data from file
-    img_data = cv2.imread('image.jpg')
+    img_data = cv2.imread("image.jpg")
 
     # Convert the image data to bytes
-    retval, buffer = cv2.imencode('.jpg', img_data)
+    retval, buffer = cv2.imencode(".jpg", img_data)
     img_bytes = buffer.tobytes()
 
     # Return the image as a response
-    return HttpResponse(img_bytes, content_type='image/jpeg')
+    return HttpResponse(img_bytes, content_type="image/jpeg")
 
 
 def decrypt(image, fx, fy, fz, fp, Mk, bt, gt, rt):

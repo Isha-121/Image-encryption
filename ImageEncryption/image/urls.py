@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin", admin.site.urls),
     path("image", views.upload_image, name="image"),
     path("images", views.get_images, name="images"),
+    path("aesencrypt", views.handle_aes_encryption, name="aes_encrypt"),
 ]
 
 if settings.DEBUG:
