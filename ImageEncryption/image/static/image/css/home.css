@@ -28,6 +28,7 @@ h2 {
 
 p {
 	font-family: Palatino;
+	font-size: 1.4em !important;
 }
 
 h3 {
@@ -88,55 +89,55 @@ span {
 	border-radius: 100vmax;
 }
 .top {
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 5px;
-    background: linear-gradient(
-      90deg,
-      transparent 50%,
-      rgba(221,122,98,0.968),
-      rgb(217,100,85)
-    );
-  }
-  
-  .bottom {
-    right: 0;
-    bottom: 0;
-    height: 5px;
-    background: linear-gradient(
-      90deg,
-      rgb(217, 100, 85),
-      rgba(221, 122, 98, 0.968),
-      transparent 50%
-    );
-  }
-  
-  .right {
-    top: 0;
-    right: 0;
-    width: 5px;
-    height: 0;
-    background: linear-gradient(
-      180deg,
-      transparent 30%,
-      rgba(221, 122, 98, 0.968),
-      rgb(217, 100, 85)
-    );
-  }
-  
-  .left {
-    left: 0;
-    bottom: 0;
-    width: 5px;
-    height: 0;
-    background: linear-gradient(
-      180deg,
-      rgb(217, 100, 85),
-      rgba(221, 122, 98, 0.968),
-      transparent 70%
-    );
-  }
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 5px;
+	background: linear-gradient(
+		90deg,
+		transparent 50%,
+		rgba(221, 122, 98, 0.968),
+		rgb(217, 100, 85)
+	);
+}
+
+.bottom {
+	right: 0;
+	bottom: 0;
+	height: 5px;
+	background: linear-gradient(
+		90deg,
+		rgb(217, 100, 85),
+		rgba(221, 122, 98, 0.968),
+		transparent 50%
+	);
+}
+
+.right {
+	top: 0;
+	right: 0;
+	width: 5px;
+	height: 0;
+	background: linear-gradient(
+		180deg,
+		transparent 30%,
+		rgba(221, 122, 98, 0.968),
+		rgb(217, 100, 85)
+	);
+}
+
+.left {
+	left: 0;
+	bottom: 0;
+	width: 5px;
+	height: 0;
+	background: linear-gradient(
+		180deg,
+		rgb(217, 100, 85),
+		rgba(221, 122, 98, 0.968),
+		transparent 70%
+	);
+}
 .top {
 	animation: animateTop 3s ease-in-out infinite;
 }
@@ -180,7 +181,7 @@ span {
 	76%,
 	100% {
 		opacity: 1;
-        width: 0;
+		width: 0;
 	}
 }
 
