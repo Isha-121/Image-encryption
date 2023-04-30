@@ -11,8 +11,9 @@ from django.conf import settings
 from .forms2 import AESImageForm
 
 from Crypto.Cipher import AES
-from Crypto.Util.Padding import pad
+from Crypto.Util.Padding import pad, unpad
 from base64 import b64encode
+import getpass
 
 
 from PIL import Image
@@ -492,3 +493,45 @@ def aes_encrypt(request):
                 "aesEncrypt.html",
                 {"form": form, "img_obj": img_obj},
             )
+
+
+def aes_decrypt(request):
+    if request.method == "GET":
+        form = AESImageForm()
+        return render(request, "aesDecrypt.html", {"form": form})
+    elif request.method == "POST":
+        form = AESImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Getting the current instance object to display in the template
+            img_obj = form.instance
+            key = form.instance.key
+            key = key.encode("UTF-8")
+            key = pad(key, AES.block_size)
+
+            file_path = "./media/" + img_obj.image.path
+            file_name = img_obj.image.name[7:]
+
+            with open(file_path, "r") as entry:
+                try:
+                    data = entry.read()
+                    length = len(data)
+                    iv = data[:24]
+                    iv = b64decode(iv)
+                    ciphertext = data[24:length]
+                    ciphertext = b64decode(ciphertext)
+                    cipher = AES.new(key, AES.MODE_CFB, iv)
+                    decrypted = cipher.decrypt(ciphertext)
+                    decrypted = unpad(decrypted, AES.block_size)
+                    with open("aes_decrypted.png", "wb") as data:
+                        data.write(decrypted)
+                    data.close()
+                    return render(
+                        request, "aesDecrypt.html", {"form": form, "img_obj": img_obj}
+                    )
+
+                except (ValueError, KeyError):
+                    return render(
+                        request, "aesDecrypt.html", {"form": form, error: True}
+                    )
+    return render(request, "aesDecrypt.html", {"form": form})
