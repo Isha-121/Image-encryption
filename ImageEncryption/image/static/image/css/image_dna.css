@@ -29,6 +29,9 @@ img {
 	min-height: 300px;
 	max-height: 400px;
 }
+.row{
+    margin-top: 3em;
+}
 .my-form input[type="text"],
 .my-form input[type="file"] {
 	width: 100%;
