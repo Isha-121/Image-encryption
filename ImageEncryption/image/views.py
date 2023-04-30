@@ -353,8 +353,6 @@ def recover_image(b, g, r, iname):
     img[:, :, 2] = r
     img[:, :, 1] = g
     img[:, :, 0] = b
-    cv2.imwrite("./static/image.png", img)
-    print("saved ecrypted image as encvitdna.jpg")
     return img
 
 def image_view(request):
@@ -381,7 +379,7 @@ def decrypt(image, fx, fy, fz, fp, Mk, bt, gt, rt):
     img[:, :, 0] = red
     img[:, :, 1] = green
     img[:, :, 2] = blue
-    cv2.imwrite(("Recoveredvitdna.jpg"), img)
+    cv2.imwrite(("./static/decrypted_image.png"), img)
 
 
 # program exec9
@@ -395,14 +393,12 @@ def upload_image(request):
             form.save()
             # Getting the current instance object to display in the template
             img_obj = form.instance
-            print(img_obj.image)
-            print(img_obj.image.path)
-            # f = request.FILES["image"]
-            # with open("image/static/" + f.name, "wb+") as destination:
-            #     for chunk in f.chunks():
-            #         destination.write(chunk)
             file_path = img_obj.image.path
-            # encrypted_image = encrypt_image(file_path=file_path)
+            encrypted_image = encrypt_image(file_path=file_path)
+
+            cv2.imwrite("./static/encrypted_image.png", encrypted_image)
+            print("saved ecrypted image as encrypted_image.png")
+
             return render(
                 request,
                 "image.html",
@@ -428,8 +424,8 @@ def encrypt_image(file_path):
     b, g, r = dna_decode(blue_scrambled, green_scrambled, red_scrambled)
     img = recover_image(b, g, r, file_path)
 
-    # print("decrypting...")
-    # decrypt(img, fx, fy, fz, file_path, Mk_e, blue, green, red)
+    print("decrypting...")
+    decrypt(img, fx, fy, fz, file_path, Mk_e, blue, green, red)
     return img
 
 
