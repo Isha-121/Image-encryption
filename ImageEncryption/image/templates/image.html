@@ -17,15 +17,29 @@
     {% if img_obj %}
     <h3>Succesfully uploaded : {{img_obj.caption}}</h3>
     <img src="{{ img_obj.image.url}}" alt="connect" style="max-height: 300px" />
-    {% endif %} {% if encrypted_image %}
     <h3>Encrypted image</h3>
     <img
-      src="{{ encrypted_image.image.url}}"
-      alt="connect"
+      src="{% static 'encrypted_image.png' %}"
+      alt="Decrypted Image"
       style="max-height: 300px"
     />
+    <a
+      href="{% static 'encrypted_image.png' %}"
+      target="_blank"
+      alt="Download Encrypted Image"
+      >Download Encrypted Image</a
+    >
+    <img
+      src="{% static 'decrypted_image.png' %}"
+      alt="Encrypted Image"
+      style="max-height: 300px"
+    />
+    <a
+      href="{% static 'decrypted_image.png' %}"
+      target="_blank"
+      alt="Download Decrypted Image"
+      >Download Decrypted Image</a
+    >
     {% endif %}
-
-    <img src="{% static 'image.png' %}" alt="file" />
   </body>
 </html>
