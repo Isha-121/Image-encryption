@@ -439,3 +439,6 @@ def get_images(request):
 def get_home(request):
     if request.method == "GET":
         return render(request, "home.html")
+def aes_encrypt(request):
+    if request.method == "GET":
+        return render(request, "aesEncrypt.html")

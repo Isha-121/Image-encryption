@@ -1,45 +1,126 @@
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Image</title>
-  </head>
-  <body>
-    <h1>Upload images you want to encrypt</h1>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Upload</button>
-    </form>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Image</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous"
+		/>
+		<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
 
-    {% if img_obj %}
-    <h3>Succesfully uploaded : {{img_obj.caption}}</h3>
-    <img src="{{ img_obj.image.url}}" alt="connect" style="max-height: 300px" />
-    <h3>Encrypted image</h3>
-    <img
-      src="{% static 'encrypted_image.png' %}"
-      alt="Decrypted Image"
-      style="max-height: 300px"
-    />
-    <a
-      href="{% static 'encrypted_image.png' %}"
-      target="_blank"
-      alt="Download Encrypted Image"
-      >Download Encrypted Image</a
-    >
-    <img
-      src="{% static 'decrypted_image.png' %}"
-      alt="Encrypted Image"
-      style="max-height: 300px"
-    />
-    <a
-      href="{% static 'decrypted_image.png' %}"
-      target="_blank"
-      alt="Download Decrypted Image"
-      >Download Decrypted Image</a
-    >
-    {% endif %}
-  </body>
+		<link rel="stylesheet" href="{% static '/image/css/image_dna.css' %}" />
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/home">Home</a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarNav"
+					aria-controls="navbarNav"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav">
+						<li class="nav-item">
+							<a class="nav-link active" href="/image">Encrypt/Decrypt - DNA</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Decrypt</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container py-3">
+			<div class="input-form w-50 m-auto p-4">
+				<h1>Upload image to encrypt</h1>
+				<form class="my-form" method="post" enctype="multipart/form-data">
+					{% csrf_token %} {{ form.as_p }}
+					<button type="submit">Upload</button>
+				</form>
+			</div>
+
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{% static 'decrypted_image.png' %}" alt="Card image cap">
+            <div class="card-body">
+              <p class="card-text">Uploaded image</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top"src="{% static 'encrypted_image.png' %}" alt="Card image cap">
+            <div class="card-body">
+              <p class="card-text">Encrypted image</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="https://via.placeholder.com/300x200" alt="Card image cap">
+            <div class="card-body">
+              <p class="card-text">Decrypted image</p>
+            </div>
+          </div>
+        </div>
+      </div>
+			{% if img_obj %}
+  
+  
+			<h3>Succesfully uploaded : {{img_obj.caption}}</h3>
+			<img
+				src="{{ img_obj.image.url}}"
+				alt="connect"
+				style="max-height: 300px"
+			/>
+			<h3>Encrypted image</h3>
+			<img
+				src="{% static 'encrypted_image.png' %}"
+				alt="Decrypted Image"
+				style="max-height: 300px"
+			/>
+			<a
+				href="{% static 'encrypted_image.png' %}"
+				target="_blank"
+				alt="Download Encrypted Image"
+				>Download Encrypted Image</a
+			>
+			<img
+				src="{% static 'decrypted_image.png' %}"
+				alt="Encrypted Image"
+				style="max-height: 300px"
+			/>
+			<a
+				href="{% static 'decrypted_image.png' %}"
+				target="_blank"
+				alt="Download Decrypted Image"
+				>Download Decrypted Image</a
+			>
+			{% endif %}
+		</div>
+	</body>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+		integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+		crossorigin="anonymous"
+	></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+		integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+		crossorigin="anonymous"
+	></script>
 </html>
