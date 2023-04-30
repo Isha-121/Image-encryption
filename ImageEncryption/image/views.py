@@ -355,6 +355,17 @@ def recover_image(b, g, r, iname):
     img[:, :, 0] = b
     return img
 
+def image_view(request):
+    # Load the image data from file
+    img_data = cv2.imread('image.jpg')
+
+    # Convert the image data to bytes
+    retval, buffer = cv2.imencode('.jpg', img_data)
+    img_bytes = buffer.tobytes()
+
+    # Return the image as a response
+    return HttpResponse(img_bytes, content_type='image/jpeg')
+
 
 def decrypt(image, fx, fy, fz, fp, Mk, bt, gt, rt):
     r, g, b = split_into_rgb_channels(image)
