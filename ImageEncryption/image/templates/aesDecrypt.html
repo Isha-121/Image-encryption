@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Upload image to decrypt</h1>
+    <form class="my-form" method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+
+    {% if img_obj %}
+    <h1>Decrypted Image</h1>
+    <img src="{% static 'aes_decrypted.png' %}" alt="image" />
+    <a
+      href="{% static 'aes_decrypted.png' %}"
+      target="_blank"
+      alt="Download Decrypted Image"
+      download="aes_decrypted.png"
+      >Download Decrypted Image</a
+    >
+
+    {% endif %}
+  </body>
+</html>
