@@ -9,6 +9,7 @@ urlpatterns = [
     path("image", views.upload_image, name="image"),
     path("images", views.get_images, name="images"),
     path("aesencrypt", views.handle_aes_encryption, name="aes_encrypt"),
+    path('home',views.get_home,name='home'),
 ]
 
 if settings.DEBUG:

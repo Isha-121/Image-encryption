@@ -1,8 +1,6 @@
-#main {
-	background-image: linear-gradient(#000000, #595959);
-	text-align: center;
+body {
+	background-color: #333;
 }
-
 h1 {
 	font-family: Georgia;
 	margin-bottom: 5px;
@@ -15,11 +13,11 @@ h2 {
 	font-size: 20px;
 	margin-top: 0px;
 	padding-bottom: 20px;
-	color: #e2b4a5;
+	color: rgb(225, 167, 148);
 }
 
 #tribute-info {
-	width: 800px;
+	width: 80%;
 	margin: 0 auto 0 auto;
 	color: #e2b4a5;
 }
@@ -56,21 +54,170 @@ h3 {
 	max-width: 400px;
 	height: auto;
 }
-
-.header-div {
-	background-color: hsla(0%, 0%, 66%, 70%);
-	width: 100%;
-	max-width: 1200px;
-	margin-left: auto;
-	margin-right: auto;
-	margin-top: -40px;
-	border-style: solid;
-	border-width: 5px;
-	border-color: #e2b4a5;
-	border-radius: 5px;
+*,
+::before,
+::after {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-.contentbox {
+.card {
+	position: relative;
+	width: 300px;
+	height: 300px;
+	color: #fff;
+	background: transparent;
+	overflow: hidden;
+	border: 2px solid rgba(225, 167, 148, 0.5);
+	font-family: sans-serif;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	padding: 1em;
+}
+
+img {
+	font-size: 0.95rem;
+	text-align: center;
+}
+
+span {
+	position: absolute;
+	border-radius: 100vmax;
+}
+.top {
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 5px;
+    background: linear-gradient(
+      90deg,
+      transparent 50%,
+      rgba(221,122,98,0.968),
+      rgb(217,100,85)
+    );
+  }
+  
+  .bottom {
+    right: 0;
+    bottom: 0;
+    height: 5px;
+    background: linear-gradient(
+      90deg,
+      rgb(217, 100, 85),
+      rgba(221, 122, 98, 0.968),
+      transparent 50%
+    );
+  }
+  
+  .right {
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 30%,
+      rgba(221, 122, 98, 0.968),
+      rgb(217, 100, 85)
+    );
+  }
+  
+  .left {
+    left: 0;
+    bottom: 0;
+    width: 5px;
+    height: 0;
+    background: linear-gradient(
+      180deg,
+      rgb(217, 100, 85),
+      rgba(221, 122, 98, 0.968),
+      transparent 70%
+    );
+  }
+.top {
+	animation: animateTop 3s ease-in-out infinite;
+}
+
+.bottom {
+	animation: animateBottom 3s ease-in-out infinite;
+}
+
+.right {
+	animation: animateRight 3s ease-in-out infinite;
+}
+
+.left {
+	animation: animateLeft 3s ease-in-out infinite;
+}
+
+@keyframes animateTop {
+	25% {
+		width: 100%;
+		opacity: 1;
+	}
+
+	30%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes animateBottom {
+	0%,
+	50% {
+		opacity: 0;
+		width: 0;
+	}
+
+	75% {
+		opacity: 1;
+		width: 100%;
+	}
+
+	76%,
+	100% {
+		opacity: 1;
+        width: 0;
+	}
+}
+
+@keyframes animateRight {
+	0%,
+	25% {
+		opacity: 0;
+		height: 0;
+	}
+
+	50% {
+		opacity: 1;
+		height: 100%;
+	}
+
+	55%,
+	100% {
+		height: 100%;
+		opacity: 0;
+	}
+}
+
+@keyframes animateLeft {
+	0%,
+	75% {
+		opacity: 0;
+		bottom: 0;
+		height: 0;
+	}
+
+	100% {
+		opacity: 1;
+		height: 100%;
+	}
+}
+
+/* .contentbox {
 	background-color: #1a1a1a20;
 	width: 100%;
 	max-width: 1000px;
@@ -81,4 +228,4 @@ h3 {
 	padding-top: 3px;
 	border-style: solid;
 	border-image: linear-gradient(to bottom, #e2b4a5, rgba(0, 0, 0, 0)) 1 10%;
-}
+} */

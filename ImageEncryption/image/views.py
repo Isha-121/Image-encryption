@@ -463,3 +463,7 @@ def get_images(request):
         # send list of images to template
         images = MyImage.objects.all()
         return render(request, "images.html", {"images": images})
+    
+def get_home(request):
+    if request.method == "GET":
+        return render(request, "home.html")
