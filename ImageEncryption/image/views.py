@@ -483,12 +483,12 @@ def aes_encrypt(request):
                 ciphertext = b64encode(ciphertext).decode("UTF-8")
                 to_write = iv + ciphertext
             entry.close()
-            with open("./static/aes_encrypted.png" , "w") as data:
+            with open("./static/aes_encrypted.png", "w") as data:
                 data.write(to_write)
             data.close()
 
             return render(
                 request,
-                "image.html",
+                "aesEncrypt.html",
                 {"form": form, "img_obj": img_obj},
             )
