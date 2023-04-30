@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 
 from .forms import UploadedImage
-from .models import Image
+from .models import MyImage
 from django.conf import settings
 
 
@@ -353,7 +353,7 @@ def recover_image(b, g, r, iname):
     img[:, :, 2] = r
     img[:, :, 1] = g
     img[:, :, 0] = b
-    cv2.imwrite(("encvitdna.jpg"), img)
+    cv2.imwrite("./static/image.png", img)
     print("saved ecrypted image as encvitdna.jpg")
     return img
 
@@ -384,14 +384,47 @@ def upload_image(request):
             form.save()
             # Getting the current instance object to display in the template
             img_obj = form.instance
-            return render(request, "image.html", {"form": form, "img_obj": img_obj})
+            print(img_obj.image)
+            print(img_obj.image.path)
+            # f = request.FILES["image"]
+            # with open("image/static/" + f.name, "wb+") as destination:
+            #     for chunk in f.chunks():
+            #         destination.write(chunk)
+            file_path = img_obj.image.path
+            # encrypted_image = encrypt_image(file_path=file_path)
+            return render(
+                request,
+                "image.html",
+                {"form": form, "img_obj": img_obj},
+            )
     elif request.method == "GET":
         form = UploadedImage()
         return render(request, "image.html", {"form": form})
 
 
+def encrypt_image(file_path):
+    key, m, n = securekey(file_path)
+    update_lorentz(key)
+    blue, green, red = decompose_matrix(file_path)
+    blue_e, green_e, red_e = dna_encode(blue, green, red)
+    Mk_e = key_matrix_encode(key, blue)
+    blue_final, green_final, red_final = xor_operation(blue_e, green_e, red_e, Mk_e)
+    x, y, z = gen_chaos_seq(m, n)
+    fx, fy, fz = sequence_indexing(x, y, z)
+    blue_scrambled, green_scrambled, red_scrambled = scramble(
+        fx, fy, fz, blue_final, red_final, green_final
+    )
+    b, g, r = dna_decode(blue_scrambled, green_scrambled, red_scrambled)
+    img = recover_image(b, g, r, file_path)
+
+    # print("decrypting...")
+    # decrypt(img, fx, fy, fz, file_path, Mk_e, blue, green, red)
+    return img
+
+
 def get_images(request):
     if request.method == "GET":
         image_dir = os.path.join(settings.MEDIA_ROOT, "images")
-        # send the images as response to template from the media directory to display
-        return render(request, "images.html", {"images": os.listdir(image_dir)})
+        # send list of images to template
+        images = MyImage.objects.all()
+        return render(request, "images.html", {"images": images})
