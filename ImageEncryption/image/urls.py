@@ -10,6 +10,7 @@ urlpatterns = [
     path("images", views.get_images, name="images"),
     path("home", views.get_home, name="home"),
     path("aesencrypt", views.aes_encrypt, name="aesEncrypt"),
+    path("aesdecrypt", views.aes_decrypt, name="aesDecrypt"),
 ]
 
 if settings.DEBUG:
