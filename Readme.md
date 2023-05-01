@@ -32,5 +32,16 @@
   
 - To run particular file type command: <code>python filename</code>
 
+### Home page
+![Homoe page](https://github.com/Isha-121/Image-encryption/blob/main/WhatsApp%20Image%202023-05-01%20at%2018.12.35.jpeg)
+### DNA encrypt/decrypt page
+![DNA encrypt/decrypt page](https://github.com/Isha-121/Image-encryption/blob/main/WhatsApp%20Image%202023-05-01%20at%2018.12.35(1).jpeg)
+### DNA encrypt/decrypt output page
+![DNA encrypt/decrypt output page](https://github.com/Isha-121/Image-encryption/blob/main/WhatsApp%20Image%202023-05-01%20at%2018.13.23.jpeg)
+### AES encrypt page
+![AES page](https://github.com/Isha-121/Image-encryption/blob/main/WhatsApp%20Image%202023-05-01%20at%2018.16.06.jpeg)
+### AES decrypt page
+![AES decypt page](https://github.com/Isha-121/Image-encryption/blob/main/Screenshot%202023-05-01%20232305.jpg)
+
 
 
