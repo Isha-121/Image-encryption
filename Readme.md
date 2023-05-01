@@ -20,6 +20,17 @@
 
 - download the zip folder or create a clone into your local file system using command <code>git clone url</code>
 - Go to project directory where <code>manage.py</code> file resides. By typing command <code>cd ImageEncryption</code>
+- Finally type <code>python manage.py runserver</code> to run the project.
+- Then website will be live at <a href="http://127.0.0.1:8000/home">link</a>
+
+## To directly run encryption and decryption files in console
+
+- In root directory we have three files
+  - <code>dna.py</code>
+  - <code>AES_FILE_Encrypt.py</code>
+  - <code>AES_FILE_DECRYPT.py</code>
+  
+- To run particular file type command: <code>python filename</code>
 
 
 
