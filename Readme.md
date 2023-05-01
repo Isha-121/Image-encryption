@@ -6,5 +6,20 @@
 
 <p>Despite these challenges, image encryption using DNA cryptography shows great promise as a highly secure and efficient method of encrypting digital images. Future research in this area may focus on developing more efficient DNA-based encryption algorithms and improving the stability and storage of DNA molecules. </p>
 
-![Alt text](relative%20path/to/img.jpg?raw=true "Title")
+### System requirements
+
+- python 3.10 or later 
+- django 4.1 or later
+- matplotlib 3.7 or later
+- numpy 1.24 or later
+- opencr-python 4.7 or later
+- pillow 9.5 or later
+- scipy 1.10 or later
+
+## How to run django project.
+
+- download the zip folder or create a clone into your local file system using command <code>git clone url</code>
+- Go to project directory where <code>manage.py</code> file resides. By typing command <code>cd ImageEncryption</code>
+
+
 
